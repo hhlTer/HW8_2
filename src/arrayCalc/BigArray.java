@@ -1,5 +1,6 @@
 package arrayCalc;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Scanner;
 import java.util.concurrent.*;
@@ -15,38 +16,40 @@ public class BigArray {
         return a;
     }
 
-    private  static double result;
+    private static double result;
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-        final int SIZE = 80_000_000;
+        final int SIZE = 8_000_000;
         int[] a = bigArray(SIZE);
 
-        ExecutorService service = Executors.newFixedThreadPool(2);
-        Runnable runnable = () -> result = sinCos(a);
         Callable<Double> callable = () -> sinCos(a);
 
         Scanner scanner = new Scanner(System.in);
         System.out.print("N> ");
         int n = scanner.nextInt();
 
+        ExecutorService service = Executors.newFixedThreadPool(n);
         Future<Double> future = service.submit(callable); //ExexuteServise submit
         service.shutdown();
 //Pool
         long d = new Date().getTime();
-        for (int i = 0; i < n; i++)
-            System.out.println("From future " + future.get()); //future.get
+        System.out.println("From pool: " + future.get()); //future.get
         long sub = new Date().getTime() - d;
         System.out.println("Time \n" + sub);
 
 //Thread
         d = new Date().getTime();
-        for (int i = 0; i < n; i++){
-            Thread thread = new Thread(runnable);
-            thread.start();
-            thread.join();
-            System.out.println("Thread method: " + result);
+        for (int i = 0; i < n; i++) {
+            int start = i * a.length/n;
+            int fin = (i+1)*a.length/n;
+            int[] array = Arrays.copyOfRange(a, start, fin);
+            SumArrayThread arrayThread = new SumArrayThread(array);
+            arrayThread.start();
+            arrayThread.join();
+            result += arrayThread.getSum();
         }
         sub = new Date().getTime() - d;
+        System.out.println("\nThread result: " + result);
         System.out.println("Time: " + sub);
     }
 
@@ -66,17 +69,11 @@ public class BigArray {
         System.out.println("Result: " + result);
         long sub = new Date().getTime() - d;
         System.out.println("Time: " + sub);
-//        service.shutdown();
     }
 
-    private static double sinCos(int[] a){
+    static double sinCos(int[] a){
         double sum = 0;
-        for (int i = 0; i < a.length; i++) {
-            double sin = Math.sin((double) a[i]);
-            double cos = Math.cos((double) a[i]);
-            sum += sin + cos;
-        }
+        for (int anA : a) sum += Math.sin(anA) + Math.cos(anA);
         return sum;
-
     }
 }

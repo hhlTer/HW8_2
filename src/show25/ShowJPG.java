@@ -81,7 +81,7 @@ public class ShowJPG extends Application {
         final double plusWidth = 205;
         final double imageHeight = 135;
         final double plusHeight = 138;
-        ImageView[] images = new ImageView[25];
+//        ImageView[] images = new ImageView[25];
 
         ExecutorService service = Executors.newFixedThreadPool(10);
 
@@ -110,7 +110,7 @@ public class ShowJPG extends Application {
                         imageView.setTranslateX(((index) % 5) * plusWidth + slideX);
                         imageView.setTranslateY(plusHeight * (index / 5) + slideY);
                         imageView.setPreserveRatio(true);
-                        images[index] = imageView;
+//                        images[index] = imageView;
                         pane.getChildren().addAll(imageView);
                     });
                 });

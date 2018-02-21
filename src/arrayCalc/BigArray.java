@@ -19,30 +19,31 @@ public class BigArray {
     private static double result;
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-        final int SIZE = 8_000_000;
-        int[] a = bigArray(SIZE);
+        final int SIZE = 80_000_000;
+        int[] a = bigArray(SIZE); //fillArray
 
-        Callable<Double> callable = () -> sinCos(a);
-
+        Callable<Double> callable = () -> sinCos(a);//calc in callable
+//Dialog
         Scanner scanner = new Scanner(System.in);
         System.out.print("N> ");
         int n = scanner.nextInt();
+//-----------------------------------------------------------------------------
+        ExecutorService service = Executors.newFixedThreadPool(n); //create pool
+        Future<Double> future = service.submit(callable); //submit in future
+        service.shutdown();//and shutdown
 
-        ExecutorService service = Executors.newFixedThreadPool(n);
-        Future<Double> future = service.submit(callable); //ExexuteServise submit
-        service.shutdown();
-//Pool
+//---------------------------Pool start-----------------------------------------
         long d = new Date().getTime();
-        System.out.println("From pool: " + future.get()); //future.get
+        System.out.println("From pool: " + future.get());
         long sub = new Date().getTime() - d;
         System.out.println("Time \n" + sub);
 
-//Thread
+//-------------------------Thread start-----------------------------------------
         d = new Date().getTime();
         for (int i = 0; i < n; i++) {
             int start = i * a.length/n;
             int fin = (i+1)*a.length/n;
-            int[] array = Arrays.copyOfRange(a, start, fin);
+            int[] array = Arrays.copyOfRange(a, start, fin);//separate array
             SumArrayThread arrayThread = new SumArrayThread(array);
             arrayThread.start();
             arrayThread.join();
@@ -50,24 +51,6 @@ public class BigArray {
         }
         sub = new Date().getTime() - d;
         System.out.println("\nThread result: " + result);
-        System.out.println("Time: " + sub);
-    }
-
-    private static void poolCalc(Callable<Double> sum, ExecutorService service){
-        long d = new Date().getTime();
-        Future<Double> f = service.submit(sum);
-        double result = 0;
-        try {
-            result = f.get();
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-        System.out.println("Pool method:");
-        System.out.println("Result: " + result);
-        long sub = new Date().getTime() - d;
         System.out.println("Time: " + sub);
     }
 

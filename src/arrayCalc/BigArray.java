@@ -19,7 +19,7 @@ public class BigArray {
     private static double result;
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-        final int SIZE = 8_000_000;
+        final int SIZE = 2_000_000;
         int[] a = bigArray(SIZE); //fillArray
 
 //        Callable<Double> callable = () -> sinCos(a);//calc in callable
@@ -36,14 +36,14 @@ public class BigArray {
         for (int i = 0; i < n; i++) {
             System.out.println("Caculate " + (i+1) + ":");
             System.out.println("------------------------------------------------");
-            long checkPoint = new Date().getTime();
+            long checkPoint = System.currentTimeMillis();
             System.out.println("Pool result: " + calcInPool(a, t));
-            checkPoint = new Date().getTime() - checkPoint;
+            checkPoint = System.currentTimeMillis() - checkPoint;
             System.out.println("Time \n" + checkPoint);
             System.out.println("------------------------------------------------");
-            checkPoint = new Date().getTime();
+            checkPoint = System.currentTimeMillis();
             System.out.println("Thread(s) result: " + calcInTreads(a, t));
-            checkPoint = new Date().getTime() - checkPoint;
+            checkPoint = System.currentTimeMillis() - checkPoint;
             System.out.println("Time \n" + checkPoint);
             System.out.println("================================================\n");
         }
@@ -76,7 +76,6 @@ public class BigArray {
     }
 
     private static Callable<Double> callable(int[] array){
-        Callable<Double> callable = () -> sinCos(array);
-        return callable;
+        return () -> sinCos(array);
     }
 }

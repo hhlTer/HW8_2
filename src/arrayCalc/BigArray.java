@@ -30,14 +30,13 @@ public class BigArray {
         int t = scanner.nextInt();
         scanner.close();
 
-        ExecutorService executor = Executors.newFixedThreadPool(n);
-        List<Future<Double>> list = new ArrayList<>();
+        ExecutorService executor = Executors.newFixedThreadPool(t);
 
         CallableMethod callableMethod = new CallableMethod(a);
 
 //-----------------------------------------------------------------------------
         for (int i = 0; i < n; i++) {
-            System.out.println("Caculate " + (i+1) + ":");
+            System.out.println("Caculate " + (i + 1) + ":");
             System.out.println("------------------------------------------------");
             long checkPoint = System.currentTimeMillis();
 
@@ -48,11 +47,22 @@ public class BigArray {
             System.out.println("------------------------------------------------");
 
             checkPoint = System.currentTimeMillis();
-            RunnableMethod runnableMethod = new RunnableMethod(a);
-            Thread thread = new Thread(runnableMethod);
-            thread.start();
-            thread.join();
-            System.out.println("Thread(s) result: " + runnableMethod.getResult());
+            double result = 0;
+            ThreadMethod[] threadMethods = new ThreadMethod[t];
+            for (int j = 0; j < t; j++) {
+                int start = j * a.length / n;
+                int fin = (j + 1) * a.length / n;
+                int[] array = Arrays.copyOfRange(a, start, fin);
+                threadMethods[j] = new ThreadMethod(array);
+            }
+
+            for (ThreadMethod th:
+                 threadMethods) {
+                th.join();//---------------------чому не чекає завершення тут?
+                result += th.getResult();
+            }
+
+            System.out.println("Thread(s) result: " + result);
             checkPoint = System.currentTimeMillis() - checkPoint;
             System.out.println("Time \n" + checkPoint);
             System.out.println("================================================\n");

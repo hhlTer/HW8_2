@@ -1,20 +1,19 @@
 package arrayCalc;
 
-public class RunnableMethod implements Runnable {
+public class ThreadMethod extends Thread{
     private int[] array;
     private double result;
 
-    RunnableMethod(int[] array){
+    ThreadMethod(int[] array){
         this.array = array;
     }
-
     @Override
     public void run() {
         result = 0;
         for (int anA : array) result += Math.sin(anA) + Math.cos(anA);
     }
 
-    public double getResult() {
+    double getResult() {
         return result;
     }
 }

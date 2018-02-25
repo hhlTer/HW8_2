@@ -1,4 +1,4 @@
-package arrayCalc;
+package task2;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -20,7 +20,7 @@ public class BigArray {
         final int SIZE = 5_000_000;
         int[] mainArray = bigArray(SIZE); //fillArray
 
-//        Callable<Double> callable = () -> sinCos(mainArray);//calc in callable
+//        Callable<Double> callable = () -> sinCos(mainArray);//task1 in callable
 //Dialog
         Scanner scanner = new Scanner(System.in);
         System.out.print("Enter count of calculate > ");

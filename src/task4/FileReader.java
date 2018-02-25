@@ -1,7 +1,6 @@
-package filereader;
+package task4;
 
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
@@ -190,9 +189,6 @@ public class FileReader extends Application{
             fos.flush();
             fos.close();
             return true;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return false;
         } catch (IOException e) {
             e.printStackTrace();
             return false;
@@ -217,8 +213,8 @@ public class FileReader extends Application{
     }
 
     private File openFile(Stage stage){
-        FileChooser fileChooser = new FileChooser();//Класс работы с диалогом выборки и сохранения
-        fileChooser.setTitle("Open Document");//Заголовок диалога
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Document");
         FileChooser.ExtensionFilter extFilter =
                 new FileChooser.ExtensionFilter("Text files (*.txt)", "*.txt");//Расширение
         fileChooser.getExtensionFilters().add(extFilter);

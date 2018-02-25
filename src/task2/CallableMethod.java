@@ -1,4 +1,4 @@
-package arrayCalc;
+package task2;
 
 import java.util.concurrent.Callable;
 

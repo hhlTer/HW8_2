@@ -17,10 +17,10 @@ public class BigArray {
     private static double result;
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-        final int SIZE = 2_000_000;
-        int[] a = bigArray(SIZE); //fillArray
+        final int SIZE = 5_000_000;
+        int[] mainArray = bigArray(SIZE); //fillArray
 
-//        Callable<Double> callable = () -> sinCos(a);//calc in callable
+//        Callable<Double> callable = () -> sinCos(mainArray);//calc in callable
 //Dialog
         Scanner scanner = new Scanner(System.in);
         System.out.print("Enter count of calculate > ");
@@ -31,40 +31,33 @@ public class BigArray {
         scanner.close();
 
         ExecutorService executor = Executors.newFixedThreadPool(t);
-
-        CallableMethod callableMethod = new CallableMethod(a);
+        CallableMethod callableMethod = new CallableMethod(mainArray);
 
 //-----------------------------------------------------------------------------
         for (int i = 0; i < n; i++) {
+            double result;
+            //-------------Pool-------------------
             System.out.println("Caculate " + (i + 1) + ":");
             System.out.println("------------------------------------------------");
             long checkPoint = System.currentTimeMillis();
-
             Future<Double> future = executor.submit(callableMethod);
-            System.out.println("Pool result: " + future.get());
+            System.out.print("Pool result: ");
+            result = future.get();                                  //get
             checkPoint = System.currentTimeMillis() - checkPoint;
-            System.out.println("Time \n" + checkPoint);
+            System.out.println(result);
+            System.out.println("Time: \n" + checkPoint);
             System.out.println("------------------------------------------------");
 
+            //--------------Thread--------------------
+            ThreadMethod threadMethod = new ThreadMethod(mainArray);
+
             checkPoint = System.currentTimeMillis();
-            double result = 0;
-            ThreadMethod[] threadMethods = new ThreadMethod[t];
-            for (int j = 0; j < t; j++) {
-                int start = j * a.length / n;
-                int fin = (j + 1) * a.length / n;
-                int[] array = Arrays.copyOfRange(a, start, fin);
-                threadMethods[j] = new ThreadMethod(array);
-            }
-
-            for (ThreadMethod th:
-                 threadMethods) {
-                th.join();//---------------------чому не чекає завершення тут?
-                result += th.getResult();
-            }
-
-            System.out.println("Thread(s) result: " + result);
+            System.out.print("Threads result: ");
+            result = threadMethod.result(t);
             checkPoint = System.currentTimeMillis() - checkPoint;
-            System.out.println("Time \n" + checkPoint);
+
+            System.out.println(result);
+            System.out.println("Time: " + checkPoint);
             System.out.println("================================================\n");
         }
         executor.shutdown();
